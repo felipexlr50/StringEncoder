@@ -1,104 +1,67 @@
 package gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.JOptionPane;
 
-import teste.EncoderEngine;
+import core.EncoderEngine;
 
-public class Eventos{
+public class Eventos {
 
-	private Tela tela;
-	private EncoderEngine encode = new EncoderEngine();
+    private Tela tela;
 
+    public Eventos(Tela tela) {
+        this.tela = tela;
+    }
 
+    public void botaoEvento() {
+        tela.btnSair.addActionListener(e -> System.exit(0));
 
-	public Eventos(Tela tela) {
-		this.tela = tela;
+        tela.btnLimpar.addActionListener(e -> {
 
+            tela.textArea.setText("");
+            tela.tfChave.setText("");
+            tela.textArea.requestFocus();
 
+        });
 
-	}
+        tela.btnCodificar.addActionListener(e -> {
+            try {
 
-	public void botaoEvento(){
-		tela.btnSair.addActionListener(new ActionListener() {
+                tela.textArea.setText(EncoderEngine.encodeToHex(tela.textArea.getText(),
+                        tela.tfChave.getText()));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                tela.tfChave.requestFocus();
 
-				System.exit(0);
+            }
+            catch (NumberFormatException erro) {
+                JOptionPane.showMessageDialog(tela, "Chave só aceita números positivos!");
+            }
+            catch (UnsupportedEncodingException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
 
-			}
-		});
+        tela.btnDecodificar.addActionListener(e -> {
+            try {
 
-		tela.btnLimpar.addActionListener(new ActionListener() {
+                tela.textArea.setText(EncoderEngine.decodeFromHex(tela.textArea.getText(),
+                        tela.tfChave.getText()));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                tela.tfChave.requestFocus();
 
-				tela.textArea.setText("");
-				tela.tfChave.setText("");
-				tela.textArea.requestFocus();
+            }
+            catch (NumberFormatException erro) {
+                JOptionPane.showMessageDialog(tela, "Chave só aceita números positivos!");
 
-			}
-		});
+            }
+            catch (UnsupportedEncodingException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 
-		tela.btnCodificar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try{
-
-					tela.textArea.setText(encode.encode(tela.textArea.getText(),
-							Integer.parseInt(tela.tfChave.getText())));
-
-					tela.tfChave.requestFocus();
-
-
-				}
-				catch(NumberFormatException erro){
-					JOptionPane.showMessageDialog(tela, "Chave só aceita números positivos!");
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-
-
-
-		});
-
-		tela.btnDecodificar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try{
-
-
-					tela.textArea.setText(encode.decode(tela.textArea.getText(),
-							Integer.parseInt(tela.tfChave.getText())));
-
-
-
-					tela.tfChave.requestFocus();
-
-
-				}
-				catch(NumberFormatException erro){
-					JOptionPane.showMessageDialog(tela, "Chave só aceita números positivos!");
-
-				} 
-				catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-
-			}
-		});
-
-	}
-
+        });
+    }
 
 }
